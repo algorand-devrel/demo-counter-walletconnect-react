@@ -2,9 +2,6 @@
 .mnemonic
 app.id
 
-# VSCode
-.vscode
-
 # Logs
 logs
 *.log
