@@ -6,7 +6,7 @@ from algosdk import mnemonic
 from algosdk import account
 
 # user declared account mnemonics
-creator_mnemonic = "castle advance settle disagree quiz canvas tree taxi token tiger keep heart inner south warm pair situate wise garlic across exist bag near ability wire"
+creator_mnemonic = str(open("./.mnemonic").read())
 # ensuer this account is funded using TestNet dispenser: https://dispenser.testnet.aws.algodev.network/
 
 # user declared algod connection parameters. 

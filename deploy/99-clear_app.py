@@ -79,8 +79,8 @@ def read_global_state(client, addr, app_id):
             return format_state(app['params']['global-state'])
     return {}
     
-# call application
-def call_app(client, private_key, index, app_args) : 
+# clear application
+def clear_app(client, private_key, index, app_args) : 
     # declare sender
     sender = account.address_from_private_key(private_key)
 
@@ -88,19 +88,19 @@ def call_app(client, private_key, index, app_args) :
     params = client.suggested_params()
 
     # create unsigned transaction
-    txn = transaction.ApplicationNoOpTxn(sender, params, index, app_args)
+    app_clear_txn = transaction.ApplicationClearStateTxn(sender, params, app_id, app_args)
 
     # sign transaction
-    signed_txn = txn.sign(private_key)
-    tx_id = signed_txn.transaction.get_txid()
+    signed_app_clear_txn = app_clear_txn.sign(private_key)
+    tx_id = signed_app_clear_txn.transaction.get_txid()
 
-    # send transaction
-    client.send_transactions([signed_txn])
+    # send transactions
+    client.send_transactions([signed_app_clear_txn])
 
     # await confirmation
     wait_for_confirmation(client, tx_id, 5)
 
-    print("Application called")
+    print("Application cleard successfully")
     
 def main() :
     # initialize an algodClient
@@ -110,11 +110,7 @@ def main() :
     creator_private_key = get_private_key_from_mnemonic(creator_mnemonic)
 
     print("--------------------------------------------")
-    print("Calling Counter Application ({})......".format(app_id))
-    app_args = ["Add"]
-    call_app(algod_client, creator_private_key, app_id, app_args)
-
-    # read global state of application
-    print("Global state:", read_global_state(algod_client, account.address_from_private_key(creator_private_key), app_id))
+    print("Clearing Application ({})......".format(app_id))
+    clear_app(algod_client, creator_private_key, app_id, None)
 
 main()

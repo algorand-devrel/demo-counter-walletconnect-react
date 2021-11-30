@@ -1,3 +1,7 @@
+# dApp vars
+.mnemonic
+app.id
+
 # Logs
 logs
 *.log
