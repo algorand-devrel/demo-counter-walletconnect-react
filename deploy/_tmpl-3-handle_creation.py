@@ -4,7 +4,7 @@ def approval_program():
 
    handle_creation = Seq([
        App.globalPut(Bytes("Count"), Int(0)),
-       Return(Int(1))
+       Approve()
    ])
 
    program = Cond(

@@ -4,16 +4,16 @@ def approval_program():
 
    handle_creation = Seq([
        App.globalPut(Bytes("Count"), Int(0)),
-       Return(Int(1))
+       Approve()
    ])
 
    handle_optin = Return(Int(0))     # Optin not used, so disallowing for now
 
    handle_closeout = Return(Int(0))
 
-   handle_updateapp = Return(Int(1)) # Allowing updates ONLY for testing
+   handle_updateapp = Approve() # Allowing updates ONLY for testing
 
-   handle_deleteapp = Return(Int(1)) # Allowing updates ONLY for testing
+   handle_deleteapp = Approve() # Allowing updates ONLY for testing
 
    program = Cond(
        [Txn.application_id() == Int(0), handle_creation],

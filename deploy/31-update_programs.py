@@ -7,15 +7,15 @@ def approval_program():
 
    handle_creation = Seq([
        App.globalPut(Bytes("Count"), Int(0)),
-       Return(Int(1))
+       Approve()
    ])
    handle_optin = Seq([
        App.localPut(Int(0), Bytes("Calls"), Int(0)),
-       Return(Int(1))
+       Approve()
    ])     
-   handle_closeout = Return(Int(1))
-   handle_updateapp = Return(Int(1)) 
-   handle_deleteapp = Return(Int(1)) 
+   handle_closeout = Approve()
+   handle_updateapp = Approve() 
+   handle_deleteapp = Approve() 
 
    scratchCount = ScratchVar(TealType.uint64)
    scratchCalls = ScratchVar(TealType.uint64)
@@ -31,7 +31,7 @@ def approval_program():
             App.globalPut(Bytes("Count"), scratchCount.load() + Int(1)),
             scratchCalls.store(App.localGet(Int(0), Bytes("Calls"))),
             App.localPut(Int(0), Bytes("Calls"), scratchCalls.load() + Int(1)),
-            Return(Int(1))
+            Approve()
         ])
        ]
    )
@@ -48,7 +48,7 @@ def approval_program():
    return compileTeal(program, Mode.Application, version=5)
 
 def clear_state_program():
-   program = Return(Int(1))
+   program = Approve()
    return compileTeal(program, Mode.Application, version=5)
 
 # print out the results
