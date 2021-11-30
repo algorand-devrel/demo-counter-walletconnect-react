@@ -7,13 +7,13 @@ def approval_program():
        Approve()
    ])
 
-   handle_optin = Return(Int(0))     # Optin not used, so disallowing for now
+   handle_optin = Reject()     # Optin not used, so disallowing for now
 
-   handle_closeout = Return(Int(0))
+   handle_closeout = Reject()
 
    handle_updateapp = Approve() # Allowing updates ONLY for testing
 
-   handle_deleteapp = Approve() # Allowing updates ONLY for testing
+   handle_deleteapp = Approve() # Allowing delete ONLY for testing
 
    program = Cond(
        [Txn.application_id() == Int(0), handle_creation],

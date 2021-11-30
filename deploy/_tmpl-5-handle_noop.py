@@ -6,8 +6,8 @@ def approval_program():
        App.globalPut(Bytes("Count"), Int(0)),
        Approve()
    ])
-   handle_optin = Return(Int(0))     
-   handle_closeout = Return(Int(0))
+   handle_optin = Reject()     
+   handle_closeout = Reject()
    handle_updateapp = Approve() 
    handle_deleteapp = Approve() 
 
