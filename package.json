@@ -1,0 +1,71 @@
+{
+  "name": "demo-counter-walletconnect-react",
+  "version": "1.0.0",
+  "private": false,
+  "description": "Algorand demo react counter app",
+  "author": "",
+  "license": "MIT",
+  "url": "",
+  "email": "",
+  "repository": "",
+  "homepage": "",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "dependencies": {
+    "@algonaut/algo-validation-agent": "latest",
+    "@material-ui/core": "^4.9.8",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.58",
+    "algosdk": "^1.12.0",    
+    "classnames": "^2.3.1",
+    "moment": "latest",
+    "perfect-scrollbar": "^1.5.1",
+    "prop-types": "^15.7.2",   
+    "react-id-generator": "^3.0.1",      
+    "react-router-dom": "^5.1.2",    
+    "react-loaders": "latest",    
+    "isomorphic-fetch": "^3.0.0",
+    "react-notifications-component": "^2.4.0",
+    "web-vitals": "latest",
+    "@json-rpc-tools/utils": "^1.7.5",
+    "@walletconnect/client": "^1.6.5",
+    "algorand-walletconnect-qrcode-modal": "^1.6.1",
+    "react-spring": "^8.0.27"
+    
+  },
+  "devDependencies": {
+    "@babel/plugin-syntax-object-rest-spread": "^7.8.3",
+    "babel-eslint": "^10.0.3",
+    "cross-env": "^7.0.2",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-config-standard-react": "^9.2.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-standard": "^4.0.1",
+    "gh-pages": "^2.2.0",
+    "microbundle-crl": "^0.13.10",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.0.4",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "^3.4.1"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
