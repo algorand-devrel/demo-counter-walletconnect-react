@@ -1,40 +1,26 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-
 import algosdk from "algosdk";
+import WalletConnect from "@walletconnect/client";
+import QRCodeModal from "algorand-walletconnect-qrcode-modal";
+
+import React, { Component } from "react";
+import { formatJsonRpcRequest } from "@json-rpc-tools/utils";
+
 import { withStyles } from "@material-ui/core/styles";
-// import rocket from "./assets/images/rocket.gif"
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import Typography from "@material-ui/core/Typography";
+import PropTypes from "prop-types";
+
+import AlgoWalletInput from "./components/AlgoWalletInput";
+import Digit from "./components/Digit";
 import algoLogo from "./assets/images/algo.png";
 import algorandLogoWhite from "./assets/images/algorand_full_logo_white.png";
 import algorandLogo from "./assets/images/algorand_full_logo_black.svg";
-
 import walletConnectLogo from "./assets/images/walletconnect-banner.png";
 import decipherLogo from "./assets/images/decipher-logo.jpg";
-import AlgoWalletInput from "./components/AlgoWalletInput";
-import WalletConnect from "@walletconnect/client";
-import QRCodeModal from "algorand-walletconnect-qrcode-modal";
-import { formatJsonRpcRequest } from "@json-rpc-tools/utils";
-import Digit from "./components/Digit";
 import { store } from "react-notifications-component";
-import {
-  Paper,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  Switch,
-  Avatar,
-  CardHeader,
-  CardContent,
-  CardFooter,
-  IconButton,
-  Tooltip,
-} from "@material-ui/core";
-import SmartContracts from "./SmartContracts"
-const { appProg, clearProg } = SmartContracts;
+
 const styles = (theme) => ({
   algorandImage: {
     width: "128px",
@@ -843,23 +829,36 @@ class App extends Component {
       suggestedParams: params,
       type: "pay",
       from: wallet,
-      to: 'QN7YHZF2HGN666F3XLNPL7474HNK43TZS5HGQZYPARH7S5L7OCYHKYXZUY',
+      to: 'GD64YIY3TWGDMCNPP553DZPPR6LDUSFQOIJVFDPPXWEG3FVOJCCDBBHU5A',
       amount: Number(10000),
       note: note,
       closeRemainderTo: undefined,
       revocationTarget: undefined,
     });
-    const encodedTxn0 = algosdk.encodeUnsignedTransaction(txn0);
-    const encodedTxn1 = algosdk.encodeUnsignedTransaction(txn1);
-    const encodedTxnBuffer0 = Buffer.from(encodedTxn0).toString("base64");
-    const encodedTxnBuffer1 = Buffer.from(encodedTxn1).toString("base64");
-    const requestParams = [[{ txn: encodedTxnBuffer0, message: 'demo app counter increment app txn' }, { txn: encodedTxnBuffer1, message: 'demo app counter increment payment txn' }]];
+    const txns = [txn0, txn1]
+    algosdk.assignGroupID(txns)
+
+    const txnsToSign = txns.map(txn => {
+        const encodedTxn = Buffer.from(algosdk.encodeUnsignedTransaction(txn)).toString("base64");
+    return {
+        txn: encodedTxn,
+        message: 'Description of transaction being signed',
+        };
+    });      
+
+    const requestParams = [txnsToSign];
     const request = formatJsonRpcRequest("algo_signTxn", requestParams);
+
+
     const result = await this.connector.sendCustomRequest(request);
-    rawSignedTxn = result.map(element => {
-      return element ? new Uint8Array(Buffer.from(element, "base64")) : null;
+//    const result: Array<string | null> = await this.connector.sendCustomRequest(request);
+    const decodedResult = result.map(element => {
+        return element ? new Uint8Array(Buffer.from(element, "base64")) : null;
     });
-    sentTxn = await algodClient.sendRawTransaction(rawSignedTxn).do();
+//    rawSignedTxn = result.map(element => {
+//      return element ? new Uint8Array(Buffer.from(element, "base64")) : null;
+//    });
+    sentTxn = await algodClient.sendRawTransaction(decodedResult).do();
     txId = sentTxn.txId;
 
     store.addNotification({
@@ -904,37 +903,7 @@ class App extends Component {
           />
         </div>
 
-        <h2
-          style={{
-            textAlign: "center",
-          }}
-          className="App-desc"
-        >
-          Simple counter demo app
-        </h2>
-
-        <br />
         <Grid container>
-          <Grid item xs={6} sm={6} md={3}>
-            <Card className={classes.card} classes={{ root: classes.cardRoot }}>
-              <Typography variant="h5" style={{ fontFamily: 'monospace', display: 'inline-block' }}>
-                Balance:
-              </Typography>
-
-              <Digit
-                nums={`${balance}`}
-                color='#537bac'
-                unActiveColor='#dfe2e5'
-                backgroundColor='#dfe2e5'
-                transform
-                transformDuration={600}
-              />
-              <Typography variant="h6" style={{ fontSize: '10px', fontFamily: 'monospace', display: 'inline-block' }}>
-                (Micro<img src={algoLogo} className={classes.algoImg} style={{ display: 'inline-block' }} />)
-              </Typography>
-
-            </Card>
-          </Grid>
           <Grid item xs={6} sm={6} md={3}>
             <Card className={classes.card} classes={{ root: classes.cardRoot }}>
               <Typography variant="h5" style={{ fontFamily: 'monospace', margin: 'auto', display: 'block' }}>
@@ -983,11 +952,8 @@ class App extends Component {
             </Card>
           </Grid>
         </Grid>
-        <br />
-      
-        <img src={walletConnectLogo} className={classes.walletImg} />
+
         <AlgoWalletInput setBalance={(bal) => that.setState({ balance: Number(bal) })} walletConnectionMode="walletConnect" wallet={wallet} />
-        <br />
 
         <Button
           id="wallet-connect"
@@ -999,7 +965,7 @@ class App extends Component {
             classes.exampleBtn
           }
         >
-          {isConnectedToWallet ? `Disconnect from WalletConnect` : `Connect using WalletConnect`}
+          {isConnectedToWallet ? `Disconnect Wallet` : `Connect Wallet`}
         </Button>
       
         <Button
@@ -1014,16 +980,6 @@ class App extends Component {
         </Button>
 
         <Button
-          id="call-counter-app"
-          variant="outlined"
-          onClick={this.appCallIncrement}
-          className={
-            classes.exampleBtn
-          }
-        >
-          Global counter increment
-        </Button>
-        <Button
           id="optin-btn"
           variant="outlined"
           onClick={this.appCallOptin}
@@ -1031,7 +987,7 @@ class App extends Component {
             classes.exampleBtn
           }
         >
-          Opt-in to counter app
+          OptIn to dApp
         </Button>
         <Button
           id="pay-increment-btn"
@@ -1041,19 +997,9 @@ class App extends Component {
             classes.exampleBtn
           }
         >
-          Pay & increment
+          Call & Pay to Increment
         </Button>
 
-        <div style={{ textAlign: "center", zIndex: 5 }}>
-          <p style={{ fontSize: "14px" }}>
-            <span>&copy; {1900 + new Date().getYear()} </span>
-            <span>This is exclusively prepared for Decipher event</span>
-          </p>
-
-          <img src={algorandLogo} className={classes.algorandImage} />
-          <br />
-
-        </div>
       </div>
     );
   }
